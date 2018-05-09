@@ -14,7 +14,7 @@ T(a)の形の集合を木と呼ぶ。
 Tを木とし、n,kを自然数とする。
 このとき、あるa∈Tが存在してa≡k(mod n)が成り立つ。
 
-nを入力してa≡k(mod n)が成り立つ事を確かめるプログラムVer1.1
+nを入力してa≡k(mod n)が成り立つ事を確かめるプログラムVer1.2
 アルゴリズム：786 ◆5A/gU5yzeU
 コーディング：righ1113 ◆OPKWA8uhcY
 -}
@@ -119,8 +119,8 @@ loop1 q1 p = do
 loop2 :: Int -> Int -> (Int -> [[Int]]) -> [(Int, Maybe Int)] -> Int -> Int -> String -> IO ()
 loop2 q1 q2 funcMakeC dataFindY r p dash = do
   putStrLn("")
-  let funcMakeD = (\q1 -> makeD q1 q2 funcMakeC r p)
-  putStrLn ("D" ++ dash ++ " : " ++ show(funcMakeD q1))
+  let funcMakeD = (\q2 -> makeD q1 q2 funcMakeC r p)
+  putStrLn ("D" ++ dash ++ " : " ++ show(funcMakeD q2))
   let dataFindZ = findZ q1 q2 funcMakeC dataFindY p
   putStrLn ("(8)" ++ dash ++ " tuple : " ++ show(dataFindZ))
   let dataMakeEight = makeEight q1 q2 funcMakeC dataFindY p
