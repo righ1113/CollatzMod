@@ -14,7 +14,9 @@ T(a)の形の集合を木と呼ぶ。
 Tを木とし、n,kを自然数とする。
 このとき、あるa∈Tが存在してa≡k(mod n)が成り立つ。
 
-nを入力してa≡k(mod n)が成り立つ事を確かめるプログラムVer1.0
+nを入力してa≡k(mod n)が成り立つ事を確かめるプログラムVer1.1
+アルゴリズム：786 ◆5A/gU5yzeU
+コーディング：righ1113 ◆OPKWA8uhcY
 -}
 
 import Data.List (nub, sort, findIndex, (\\), intersect)
@@ -65,32 +67,32 @@ makeSeven y p
   = map fromJust $ [Just z | z <- [0..((length $ makeC y p) -1)]] \\ [v | (_, v) <- findY y p, v /= Nothing]
 
 -- loop2
-makeD :: Int -> Int -> [[Int]] -> Int -> Int -> [[Int]]
-makeD x1 x2 dataMakeC r p
-  = nub $ map sort [nub $ twoTimes y (r*27*p) | y <- [0..(r*27*p)-1], elem (y `mod` (r*9*p)) (dataMakeC !! x2) ]
+makeD :: Int -> Int -> (Int -> [[Int]]) -> Int -> Int -> [[Int]]
+makeD x1 x2 funcMakeC r p
+  = nub $ map sort [nub $ twoTimes y (r*27*p) | y <- [0..(r*27*p)-1], elem (y `mod` (r*9*p)) ((funcMakeC x1) !! x2) ]
 
 -- (8)
-makeDAfter :: Int -> [[Int]] -> [(Int, Maybe Int)] -> Int -> [Int]
-makeDAfter x1 dataMakeC dataFindY p
-  = concat [dataMakeC !! y |
-      y <- intersect [0..((length $ dataMakeC) -1)] [fromJust v | (k, v) <- dataFindY, v /= Nothing, k==x1]]
-findD :: Int -> Int -> Int -> [[Int]] -> Int -> Maybe Int
-findD x y1 y2 dataMakeC p = findIndex (elem x) (makeD y1 y2 dataMakeC 1 p)
-findZ :: Int -> Int -> [[Int]] -> [(Int, Maybe Int)] -> Int -> [(Int, Maybe Int)]
-findZ x1 x2 dataMakeC dataFindY p
-  = nub [(fromJust $ (findC y x1 p), findD (3*y+1 `mod` p) x1 x2 dataMakeC p)
-          | y <- makeDAfter x1 dataMakeC dataFindY p]
+makeDAfter :: Int -> (Int -> [[Int]]) -> [(Int, Maybe Int)] -> Int -> [Int]
+makeDAfter x1 funcMakeC dataFindY p
+  = concat [(funcMakeC x1) !! y |
+      y <- intersect [0..((length $ (funcMakeC x1)) -1)] [fromJust v | (k, v) <- dataFindY, v /= Nothing]]
+findD :: Int -> Int -> Int -> (Int -> [[Int]]) -> Int -> Maybe Int
+findD x y1 y2 funcMakeC p = findIndex (elem x) (makeD y1 y2 funcMakeC 1 p)
+findZ :: Int -> Int -> (Int -> [[Int]]) -> [(Int, Maybe Int)] -> Int -> [(Int, Maybe Int)]
+findZ x1 x2 funcMakeC dataFindY p
+  = nub [(fromJust $ (findC y x1 p), findD (3*y+1 `mod` p) x1 x2 funcMakeC p)
+          | y <- makeDAfter x1 funcMakeC dataFindY p]
   where
-    findC x y p = findIndex (elem x) dataMakeC
+    findC x y p = findIndex (elem x) (funcMakeC y)
 
 -- ()一度も現れなかったDiがあれば
-makeEight :: Int -> Int -> [[Int]] -> [(Int, Maybe Int)] -> Int -> [Int]
-makeEight y1 y2 dataMakeC dataFindY p
+makeEight :: Int -> Int -> (Int -> [[Int]]) -> [(Int, Maybe Int)] -> Int -> [Int]
+makeEight y1 y2 funcMakeC dataFindY p
   = map fromJust
-    $ [Just z | z <- [0..((length $ makeD y1 y2 dataMakeC 1 p) -1)]]
-      \\ [v | (_, v) <- findZ y1 y2 dataMakeC dataFindY p, v /= Nothing]
+    $ [Just z | z <- [0..((length $ makeD y1 y2 funcMakeC 1 p) -1)]]
+      \\ [v | (_, v) <- findZ y1 y2 funcMakeC dataFindY p, v /= Nothing]
 
-
+main :: IO ()
 main = do
   putStrLn ("素数pを入力してください")
   pStr <- getLine
@@ -107,22 +109,24 @@ main = do
 
 loop1 :: Int -> Int -> IO ()
 loop1 q1 p = do
+  putStrLn("")
   putStrLn ("C : " ++ show(makeC q1 p))
   putStrLn ("(6) tuple : " ++ show(findY q1 p))
   let dataMakeSeven = makeSeven q1 p
   putStrLn ("一度も現れなかったCi : " ++ show(dataMakeSeven))
-  mapM_ (\q2 -> loop2 q1 q2 (makeC q1 p) (findY q1 p) 1 p) dataMakeSeven
+  mapM_ (\q2 -> loop2 q1 q2 (\q3 -> makeC q3 p) (findY q1 p) 1 p "") dataMakeSeven
 
-loop2 :: Int -> Int -> [[Int]] -> [(Int, Maybe Int)] -> Int -> Int -> IO ()
-loop2 q1 q2 dataMakeC dataFindY r p = do
-  let dataMakeD = makeD q1 q2 dataMakeC r p
-  putStrLn ("D : " ++ show(dataMakeD))
-  let dataFindZ = findZ q1 q2 dataMakeC dataFindY p
-  putStrLn ("(8) tuple : " ++ show(dataFindZ))
-  let dataMakeEight = makeEight q1 q2 dataMakeC dataFindY p
-  putStrLn ("一度も現れなかったDi : " ++ show(dataMakeEight))
+loop2 :: Int -> Int -> (Int -> [[Int]]) -> [(Int, Maybe Int)] -> Int -> Int -> String -> IO ()
+loop2 q1 q2 funcMakeC dataFindY r p dash = do
+  putStrLn("")
+  let funcMakeD = (\q1 -> makeD q1 q2 funcMakeC r p)
+  putStrLn ("D" ++ dash ++ " : " ++ show(funcMakeD q1))
+  let dataFindZ = findZ q1 q2 funcMakeC dataFindY p
+  putStrLn ("(8)" ++ dash ++ " tuple : " ++ show(dataFindZ))
+  let dataMakeEight = makeEight q1 q2 funcMakeC dataFindY p
+  putStrLn ("一度も現れなかったDi" ++ dash ++ " : " ++ show(dataMakeEight))
   -- 繰り返し
-  mapM_ (\q3 -> loop2 q2 q3 dataMakeD dataFindZ (r*3) p) dataMakeEight
+  mapM_ (\q3 -> loop2 q2 q3 funcMakeD dataFindZ (r*3) p (dash++"'")) dataMakeEight
 
 
 
