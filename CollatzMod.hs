@@ -92,6 +92,7 @@ makeEight y1 y2 funcMakeC dataFindY p
     $ [Just z | z <- [0..((length $ makeD y1 y2 funcMakeC 1 p) -1)]]
       \\ [v | (_, v) <- findZ y1 y2 funcMakeC dataFindY p, v /= Nothing]
 
+
 main :: IO ()
 main = do
   putStrLn ("素数pを入力してください")
