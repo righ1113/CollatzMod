@@ -14,7 +14,7 @@ T(a)の形の集合を木と呼ぶ。
 Tを木とし、n,kを自然数とする。
 このとき、あるa∈Tが存在してa≡k(mod n)が成り立つ。
 
-nを入力してa≡k(mod n)が成り立つ事を確かめるプログラムVer2.0
+nを入力してa≡k(mod n)が成り立つ事を確かめるプログラムVer2.1
 アルゴリズム：前786 ◆5A/gU5yzeU
 コーディング：righ1113 ◆OPKWA8uhcY
 -}
@@ -35,7 +35,7 @@ makeA n = nub $ map sort [nub $ twoTimes x n | x <- [0..n-1]]
 makeB :: [Int] -> Int -> [[Int]]
 makeB a' n
   = nub $ map sort
-     [nub $ twoTimes x (3*n) | x <- [0..(3*n)-1], x`mod`3 /= 0, x`mod`n /= 0, notElem (x`mod`(3*n)) a' ]
+     [nub $ twoTimes x (3*n) | x <- [0..(3*n)-1], x`mod`3 /= 0, x`mod`n /= 0, notElem (x`mod`n) a' ]
 
 -- (4)A'の各元aに対し、3a+1がどのBiに属すかを見る。
 findX :: [Int] -> [[Int]] -> Int -> [(Int, Maybe Int)]
