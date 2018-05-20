@@ -43,7 +43,7 @@ makeB a' n
 
 -- (4)A'の各元aに対し、3a+1がどのBiに属すかを見る。
 findX :: [Int] -> [[Int]] -> Int -> [(Int, Maybe Int)]
-findX a' b'' n = nub [(x, findB (3*x+1 `mod` n)) | x <- a']
+findX a' b'' n = nub [(x, findB (3*x+1)) | x <- a']
   where
     findB x = findIndex (elem x) b''
 
