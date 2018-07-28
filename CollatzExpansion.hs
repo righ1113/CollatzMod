@@ -21,7 +21,7 @@ makeXRev n bits = reverse $ take n (bits ++ repeat 0)
 -- 0,1,0,1,2,3,0,1,2,3,4,5,6,7...を作る
 powList :: Int -> [[Bit]]
 powList n = concatMap (\a -> map (makeXRev a . int2bin) [0..(2^a-1)]) [1..n]
---2新数を文字列にする
+--2進数を文字列にする
 bit2Char :: Bit -> Char
 bit2Char 0 = '0'
 bit2Char 1 = '1'
@@ -74,3 +74,4 @@ mainroutine n = do
   mapM_ print $ zip (powList2 $ powList n) (answer n)
   -- putStrLn (show(collatzAll 3))
   putStrLn("プログラムは正常終了しました。　"++show n)
+
