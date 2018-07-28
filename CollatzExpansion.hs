@@ -72,6 +72,6 @@ mainroutine :: Int -> IO ()
 mainroutine n = do
   putStrLn ("n="++show n)
   mapM_ print $ zip (powList2 $ powList n) (answer n)
-  -- putStrLn (show(collatzAll 3))
+  -- mapM_ print $ zip (powList2 $ powList n) (map (map (map bit2Char . makeXRev n . int2bin)) $ answer n)
   putStrLn("プログラムは正常終了しました。　"++show n)
 
